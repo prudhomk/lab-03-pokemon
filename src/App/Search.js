@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import 'Search.css';
+import './Search.css';
 import React from 'react';
 
 class Search extends Component {

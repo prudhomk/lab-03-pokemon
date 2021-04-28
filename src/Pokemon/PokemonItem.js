@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import 'PokemonItem.css';
+import './PokemonItem.css';
 import React from 'react';
 
 class PokemonItem extends Component {
@@ -9,10 +9,10 @@ class PokemonItem extends Component {
 
     return (
       <li className='PokemonItem'>
-        <h2>{poke.name}</h2>
-        <img src={poke.url} alt={poke.name}/>
-        <p>Type: {poke.type}</p>
-        
+        <h2>{poke.pokemon}</h2>
+        <img src={poke.url_image} alt={poke.pokemon}/>
+        <p>Type: {poke.type_1}</p>
+
       </li>
      
     );

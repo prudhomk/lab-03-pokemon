@@ -1,9 +1,9 @@
 import { Component } from 'react';
-import 'App.css';
+import './App.css';
 import React from 'react';
-import Header from 'Header';
-import Footer from 'Footer';
-import Search from 'Search';
+import Header from './Header';
+import Footer from './Footer';
+import Search from './Search';
 import request from 'superagent';
 import PokemonList from '../Pokemon/PokemonList';
 
@@ -11,12 +11,15 @@ const POKEMON_API = 'https://pokedex-alchemy.herokuapp.com/api/pokedex';
 
 class App extends Component {
   state = {
-    pokemon: null,
+    pokemon: [],
     search: ''
   }
 
-  componentDidMount() {
-    this.fetchPokemon();
+  async componentDidMount() {
+    //this.fetchPokemon();
+    const response = await request
+      .get(POKEMON_API);
+    this.setState({ pokemon: response.body.results });
   }
 
   async fetchPokemon() {
@@ -27,7 +30,7 @@ class App extends Component {
         .get(POKEMON_API)
         .query({ name: search });
       
-      this.setState({ pokemon: response.body });
+      this.setState({ pokemon: response.body.results });
     }
     catch (err) {
       console.log(err);
