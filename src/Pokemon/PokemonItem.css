@@ -1,0 +1,32 @@
+.PokemonItem {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  justify-items: center;
+  cursor: pointer;
+}
+
+.PokemonItem :hover {
+  transform: translate(-1px, -1px) scale(1.02);
+  
+}
+
+
+.PokemonItem img {
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  object-fit: contain;
+  
+}
+
+.PokemonItem p {
+  margin: 0;
+  margin-top: 2px;
+  padding: 5px;
+  font-size: .8rem;
+}
+
+.PokemonItem h2 {
+  margin: 0;
+  font-size: 1rem;
+}
