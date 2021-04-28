@@ -4,17 +4,61 @@ import React from 'react';
 import Header from 'Header';
 import Footer from 'Footer';
 import Search from 'Search';
+import request from 'superagent';
 import PokemonList from '../Pokemon/PokemonList';
+
+const POKEMON_API = 'https://pokedex-alchemy.herokuapp.com/api/pokedex';
+
 class App extends Component {
+  state = {
+    pokemon: null,
+    search: ''
+  }
+
+  componentDidMount() {
+    this.fetchPokemon();
+  }
+
+  async fetchPokemon() {
+    const { search } = this.state;
+
+    try {
+      const response = await request
+        .get(POKEMON_API)
+        .query({ name: search });
+      
+      this.setState({ pokemon: response.body });
+    }
+    catch (err) {
+      console.log(err);
+    }
+    finally {
+      this.setState({ loading: false });
+    }
+  }
+
+  handleSearch = ({ search }) => {
+    this.setState(
+      { search: search },
+      () => this.fetchPokemon()
+    );
+  }
+
+
 
   render() {
+    const { pokemon } = this.state;
+
     return (
       <div className="App">
 
         <Header/>
-        <Search/>
+        <section className="Options">
+          <Search onSearch={this.handleSearch}/>
+        </section>
+       
         <main>
-          <PokemonList/>
+          <PokemonList pokemon={pokemon}/>
         </main>
 
         <Footer/>
