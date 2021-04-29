@@ -1,0 +1,22 @@
+.App {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+
+}
+
+.App main {
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.Search {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+ 
+}
