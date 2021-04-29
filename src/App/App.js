@@ -15,13 +15,19 @@ class App extends Component {
   state = {
     pokemon: [],
     search: '',
-    asc: ''
+    asc: '',
+    types: [],
+    numbers: []
   }
 
   async componentDidMount() {
     const response = await request
       .get(POKEMON_API);
-    this.setState({ pokemon: response.body.results });
+    let types = response.body.results.map(poke => poke.type_1);
+    types = types.filter((type, i, arr) => arr.indexOf(type) === i).sort();
+    let numbers = response.body.results.map(poke => poke.species_id);
+    numbers = numbers.filter((num, i, arr) => arr.indexOf(num) === i).sort((a, b) => a - b);
+    this.setState({ pokemon: response.body.results, types: types, numbers: numbers });
   }
   
   async fetchPokemon() {
@@ -44,9 +50,24 @@ class App extends Component {
     }
   }
 
-  handleSearch = ({ search }) => {
+  handleSearch = ({ search, nameFilter, typeFilter, numberFilter }) => {
+    const nameRegex = new RegExp(nameFilter, 'i');
+
+    const pokemon = this.state.pokemon
+      .filter(poke => {
+        return !nameFilter || poke.pokemon.match(nameRegex);
+      })
+      .filter(poke => {
+        return !typeFilter || poke.type_1 === typeFilter;
+      })
+      .filter(poke => {
+        return !numberFilter || poke.species_id === numberFilter;
+      });
+    
+
+
     this.setState(
-      { search: search },
+      { search: search, pokemon: pokemon },
       () => this.fetchPokemon()
     );
   }
@@ -54,14 +75,14 @@ class App extends Component {
 
 
   render() {
-    const { pokemon } = this.state;
-
+    const { pokemon, numbers, types } = this.state;
+    console.log(this.state);
     return (
       <div className="App">
 
         <Header/>
         <section className="Options">
-          <Search onSearch={this.handleSearch}/>
+          <Search onSearch={this.handleSearch} numbers={numbers} types={types}/>
         </section>
        
         <main>

@@ -1,5 +1,7 @@
 .PokemonItem {
   display: grid;
+  height: 200px;
+  padding: 10px;
   grid-template-rows: auto auto 1fr auto;
   justify-items: center;
   cursor: pointer;
