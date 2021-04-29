@@ -5,10 +5,16 @@ import React from 'react';
 class Search extends Component {
   state = {
     search: '',
+    nameFilter: ''
+    
   }
 
   handleSearchChange = ({ target }) => {
     this.setState({ search: target.value });
+  }
+
+  handleNameChange = ({ target }) => {
+    this.setState({ nameFilter: target.value });
   }
 
   handleSubmit = (e) => {
@@ -16,8 +22,16 @@ class Search extends Component {
     this.props.onSearch(this.state);
   }
 
+  componentDidUpdate(prevProp, prevState) {
+    if (prevState !== this.state) {
+      this.props.onSearch(this.state);
+    }
+  }
+
   render() {
-    const { search } = this.state;
+    const { search, nameFilter } = this.state;
+  
+
     return (
       <form className="Search" onSubmit={this.handleSubmit}>
 
@@ -27,10 +41,21 @@ class Search extends Component {
           onChange={this.handleSearchChange}
         />
 
-        <button>Search the Dex!</button>
+        <select
+          name="nameFilter"
+          value={nameFilter}
+          onChange={this.handleNameChange}
+        />
 
+        
+        <button>Search the Dex!</button>
+        
       </form>
     );
   }
 }
+
 export default Search;
+
+
+

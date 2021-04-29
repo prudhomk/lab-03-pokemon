@@ -9,26 +9,31 @@ import PokemonList from '../Pokemon/PokemonList';
 
 const POKEMON_API = 'https://pokedex-alchemy.herokuapp.com/api/pokedex';
 
+
+
 class App extends Component {
   state = {
     pokemon: [],
-    search: ''
+    search: '',
+    asc: ''
   }
 
   async componentDidMount() {
     const response = await request
       .get(POKEMON_API);
-    this.setState({ pokemon: response.body });
+    this.setState({ pokemon: response.body.results });
   }
-
+  
   async fetchPokemon() {
     const { search } = this.state;
-
+    const { asc } = this.state;
+    
     try {
       const response = await request
         .get(POKEMON_API)
-        .query({ name: search });
-      
+        .query({ pokemon: search, direction: asc });
+        
+    
       this.setState({ pokemon: response.body.results });
     }
     catch (err) {
