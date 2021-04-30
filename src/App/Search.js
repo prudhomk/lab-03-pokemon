@@ -43,7 +43,7 @@ class Search extends Component {
   }
 
   render() {
-    const { search, typeFilter, numberFilter } = this.state;
+    const { search, sortField, typeFilter, numberFilter } = this.state;
     const { pokemon } = this.props;
     
  
@@ -57,7 +57,15 @@ class Search extends Component {
           onChange={this.handleSearchChange}
         />
 
-       
+        <select
+          name="sortField"
+          value={sortField}
+          onChange={this.handleSortChange}
+        > 
+          <option value="asc">Ascending</option>
+          <option value="des">Descending</option>
+        </select>
+
         <select
           name="typeFilter"
           value={typeFilter}
