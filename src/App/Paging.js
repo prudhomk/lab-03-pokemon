@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import './Paging.scss';
+import './Paging.css';
 
 export default class Paging extends Component {
 
