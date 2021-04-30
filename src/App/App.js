@@ -16,84 +16,66 @@ class App extends Component {
     pokemon: [],
     search: '',
     asc: '',
-    types: [],
-    numbers: []
+    types: '',
+    numbers: '',
+    sortField: ''
   }
 
   async componentDidMount() {
-    const response = await request
-      .get(POKEMON_API);
-    let types = response.body.results.map(poke => poke.type_1);
-    types = types.filter((type, i, arr) => arr.indexOf(type) === i).sort();
-    let numbers = response.body.results.map(poke => poke.species_id);
-    numbers = numbers.filter((num, i, arr) => arr.indexOf(num) === i).sort((a, b) => a - b);
-    this.setState({ pokemon: response.body.results, types: types, numbers: numbers });
+    await this.fetchPokemon();
+    console.log(this.state.pokemon);
   }
   
   async fetchPokemon() {
-    const { search } = this.state;
-    const { asc } = this.state;
-    
-    try {
-      const response = await request
-        .get(POKEMON_API)
-        .query({ pokemon: search, direction: asc });
-        
-    
-      this.setState({ pokemon: response.body.results });
-    }
-    catch (err) {
-      console.log(err);
-    }
-    finally {
-      this.setState({ loading: false });
-    }
-  }
+    const { search, sortField, types, numbers } = this.state;
+    const response = await request
+      .get(POKEMON_API)
+      .query({ pokemon: search })
+      .query({ sort: 'pokemon' })
+      .query({ direction: sortField })
+      .query({ types: types })
+      .query({ numbers: numbers });
 
-  handleSearch = ({ search, nameFilter, typeFilter, numberFilter }) => {
-    const nameRegex = new RegExp(nameFilter, 'i');
-
-    const pokemon = this.state.pokemon
-      .filter(poke => {
-        return !nameFilter || poke.pokemon.match(nameRegex);
-      })
-      .filter(poke => {
-        return !typeFilter || poke.type_1 === typeFilter;
-      })
-      .filter(poke => {
-        return !numberFilter || poke.species_id === numberFilter;
-      });
-    
-
-
-    this.setState(
-      { search: search, pokemon: pokemon },
-      () => this.fetchPokemon()
+    this.setState({
+      pokemon: response.body.results },
     );
   }
 
+    handleSearch = ({ search, sortField, types, numbers }) => {
+ 
+      this.setState(
+        { 
+          search: search, 
+          sortField: sortField,
+          types: types,
+          numbers: numbers
+        },
+        () => this.fetchPokemon()
+      );
+    }
+  
 
 
-  render() {
-    const { pokemon, numbers, types } = this.state;
-    console.log(this.state);
-    return (
-      <div className="App">
+    render() {
+      const { pokemon, numbers } = this.state;
+      
+      return (
+        <div className="App">
 
-        <Header/>
-        <section className="Options">
-          <Search onSearch={this.handleSearch} numbers={numbers} types={types}/>
-        </section>
+          <Header/>
+          <section className="Options">
+            <Search onSearch={this.handleSearch} pokemon={pokemon} numbers={numbers}/>
+          </section>
        
-        <main>
-          <PokemonList pokemon={pokemon}/>
-        </main>
+          <main>
+            <PokemonList pokemon={pokemon}/>
+          </main>
 
-        <Footer/>
+          <Footer/>
 
-      </div>
-    );
-  }
+        </div>
+      );
+    }
 
 }
 
