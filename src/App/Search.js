@@ -6,12 +6,19 @@ class Search extends Component {
   state = {
     search: '',
     nameFilter: '',
-    typeFilter: '',
-    numberFilter: ''
+    sortField: ''
   }
 
   handleSearchChange = ({ target }) => {
     this.setState({ search: target.value });
+  }
+
+  handleSortChange = ({ target }) => {
+    this.setState({ sortField: target.value });
+  }
+
+  handleNumberChange = ({ target }) => {
+    this.setState({ numberFilter: target.value });
   }
 
   handleNameChange = ({ target }) => {
@@ -19,11 +26,7 @@ class Search extends Component {
   }
 
   handleTypeChange = ({ target }) => {
-    this.setState({ typefilter: target.value });
-  }
-
-  handleNumberChange = ({ target }) => {
-    this.setState({ numberFilter: target.value });
+    this.setState({ typeFilter: target.value });
   }
 
   handleSubmit = (e) => {
@@ -39,8 +42,8 @@ class Search extends Component {
 
   render() {
     const { search, nameFilter, typeFilter, numberFilter } = this.state;
-    const { types } = this.props;
-    const { numbers } = this.props;
+    const { pokemon } = this.props;
+    
  
 
     return (
@@ -57,7 +60,6 @@ class Search extends Component {
           value={nameFilter}
           onChange={this.handleNameChange}
         >
-          <option value="">Sort By...</option>
           <option value="name">Name</option>
           <option value="type">Type</option>
           <option value="number">Dex #</option>
@@ -69,7 +71,7 @@ class Search extends Component {
           onChange={this.handleTypeChange}
         >
           <option value="">All</option>
-          {types.map(type => (
+          {[...new Set(pokemon.map(poke => poke.type_1))].map(type => (
             <option key={type} value={type}>{type}</option>
           ))}
         </select>
@@ -80,8 +82,8 @@ class Search extends Component {
           onChange={this.handleNumberChange}
         >
           <option value="">All</option>
-          {numbers.map(dex => (
-            <option key={dex} value={dex}>{dex}</option>
+          {[...new Set(pokemon.map(poke => poke.species_id))].map(number => (
+            <option key={number} value={number}>{number}</option>
           ))}
         </select>
         

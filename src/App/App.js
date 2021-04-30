@@ -6,6 +6,7 @@ import Footer from './Footer';
 import Search from './Search';
 import request from 'superagent';
 import PokemonList from '../Pokemon/PokemonList';
+import Paging from './Paging';
 
 const POKEMON_API = 'https://pokedex-alchemy.herokuapp.com/api/pokedex';
 
@@ -16,84 +17,90 @@ class App extends Component {
     pokemon: [],
     search: '',
     asc: '',
-    types: [],
-    numbers: []
+    types: '',
+    numbers: '',
+    sortField: '',
+    page: 1
   }
 
   async componentDidMount() {
-    const response = await request
-      .get(POKEMON_API);
-    let types = response.body.results.map(poke => poke.type_1);
-    types = types.filter((type, i, arr) => arr.indexOf(type) === i).sort();
-    let numbers = response.body.results.map(poke => poke.species_id);
-    numbers = numbers.filter((num, i, arr) => arr.indexOf(num) === i).sort((a, b) => a - b);
-    this.setState({ pokemon: response.body.results, types: types, numbers: numbers });
+    this.fetchPokemon();
+   
   }
   
   async fetchPokemon() {
-    const { search } = this.state;
-    const { asc } = this.state;
-    
-    try {
-      const response = await request
-        .get(POKEMON_API)
-        .query({ pokemon: search, direction: asc });
-        
-    
-      this.setState({ pokemon: response.body.results });
-    }
-    catch (err) {
-      console.log(err);
-    }
-    finally {
-      this.setState({ loading: false });
-    }
-  }
+    const { search, sortField, types, numbers, page } = this.state;
+    const response = await request
+      .get(POKEMON_API)
+      .query({ pokemon: search })
+      .query({ sort: 'pokemon' })
+      .query({ direction: sortField })
+      .query({ types: types })
+      .query({ numbers: numbers })
+      .query({ page: page });
 
-  handleSearch = ({ search, nameFilter, typeFilter, numberFilter }) => {
-    const nameRegex = new RegExp(nameFilter, 'i');
-
-    const pokemon = this.state.pokemon
-      .filter(poke => {
-        return !nameFilter || poke.pokemon.match(nameRegex);
-      })
-      .filter(poke => {
-        return !typeFilter || poke.type_1 === typeFilter;
-      })
-      .filter(poke => {
-        return !numberFilter || poke.species_id === numberFilter;
-      });
-    
-
-
-    this.setState(
-      { search: search, pokemon: pokemon },
-      () => this.fetchPokemon()
+    this.setState({
+      pokemon: response.body.results },
     );
   }
 
+    handleSearch = ({ search, sortField, types, numbers }) => {
+ 
+      this.setState(
+        { 
+          search: search,
+          page: 1, 
+          sortField: sortField,
+          types: types,
+          numbers: numbers
+        },
+        () => this.fetchPokemon()
+      );
+    }
+    
+    handlePrevPage = () => {
+      this.setState(
+        { page: Math.max(this.state.page - 1, 1) },
+        () => this.fetchPokemon()
+      );
+    }
 
+    handleNextPage = () => {
+      this.setState(
+        { page: this.state.page + 1 },
+        () => this.fetchPokemon()
+      );
+    }
 
-  render() {
-    const { pokemon, numbers, types } = this.state;
-    console.log(this.state);
-    return (
-      <div className="App">
+    render() {
+      const { pokemon, numbers, page } = this.state;
+      
+      return (
+        <div className="App">
 
-        <Header/>
-        <section className="Options">
-          <Search onSearch={this.handleSearch} numbers={numbers} types={types}/>
-        </section>
+          <Header/>
+          <section className="Options">
+            <Search onSearch={this.handleSearch} pokemon={pokemon} numbers={numbers}/>
+            <Paging
+              page={page}
+              onPrev={this.handlePrevPage}
+              onNext={this.handleNextPage}
+            />
+          </section>
        
-        <main>
-          <PokemonList pokemon={pokemon}/>
-        </main>
+          <main>
+            {pokemon && (pokemon.length
+              ? <PokemonList pokemon={pokemon}/>
+              : <p>Search for a Pokemon!</p>)
+            }
+            
+          </main>
 
-        <Footer/>
+          <Footer/>
 
-      </div>
-    );
-  }
+        </div>
+      );
+    }
 
 }
 

@@ -1,0 +1,9 @@
+.Paging {
+  text-align: center;
+  margin: 10px;
+}
+.Paging button {
+    cursor: pointer;
+  }
+
+
