@@ -6,6 +6,7 @@ import Footer from './Footer';
 import Search from './Search';
 import request from 'superagent';
 import PokemonList from '../Pokemon/PokemonList';
+import Paging from './Paging';
 
 const POKEMON_API = 'https://pokedex-alchemy.herokuapp.com/api/pokedex';
 
@@ -18,23 +19,25 @@ class App extends Component {
     asc: '',
     types: '',
     numbers: '',
-    sortField: ''
+    sortField: '',
+    page: 1
   }
 
   async componentDidMount() {
-    await this.fetchPokemon();
-    console.log(this.state.pokemon);
+    this.fetchPokemon();
+   
   }
   
   async fetchPokemon() {
-    const { search, sortField, types, numbers } = this.state;
+    const { search, sortField, types, numbers, page } = this.state;
     const response = await request
       .get(POKEMON_API)
       .query({ pokemon: search })
       .query({ sort: 'pokemon' })
       .query({ direction: sortField })
       .query({ types: types })
-      .query({ numbers: numbers });
+      .query({ numbers: numbers })
+      .query({ page: page });
 
     this.setState({
       pokemon: response.body.results },
@@ -45,7 +48,8 @@ class App extends Component {
  
       this.setState(
         { 
-          search: search, 
+          search: search,
+          page: 1, 
           sortField: sortField,
           types: types,
           numbers: numbers
@@ -53,11 +57,23 @@ class App extends Component {
         () => this.fetchPokemon()
       );
     }
-  
+    
+    handlePrevPage = () => {
+      this.setState(
+        { page: Math.max(this.state.page - 1, 1) },
+        () => this.fetchPokemon()
+      );
+    }
 
+    handleNextPage = () => {
+      this.setState(
+        { page: this.state.page + 1 },
+        () => this.fetchPokemon()
+      );
+    }
 
     render() {
-      const { pokemon, numbers } = this.state;
+      const { pokemon, numbers, page } = this.state;
       
       return (
         <div className="App">
@@ -65,10 +81,19 @@ class App extends Component {
           <Header/>
           <section className="Options">
             <Search onSearch={this.handleSearch} pokemon={pokemon} numbers={numbers}/>
+            <Paging
+              page={page}
+              onPrev={this.handlePrevPage}
+              onNext={this.handleNextPage}
+            />
           </section>
        
           <main>
-            <PokemonList pokemon={pokemon}/>
+            {pokemon && (pokemon.length
+              ? <PokemonList pokemon={pokemon}/>
+              : <p>Search for a Pokemon!</p>)
+            }
+            
           </main>
 
           <Footer/>
