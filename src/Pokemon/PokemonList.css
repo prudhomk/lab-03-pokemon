@@ -6,3 +6,8 @@
   padding: 0 20px;
   align-items: center;
 }
+
+.PokemonList :hover {
+  transform: translate(-1px, -1px) scale(1.2);
+  box-shadow: 2px 2px 2px gray;
+}

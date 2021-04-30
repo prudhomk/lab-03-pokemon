@@ -8,7 +8,7 @@ class Footer extends Component {
   render() {
     return (
       <footer className="Footer">
-        <h2>The wonderful world of Pokemon</h2>
+        <h2>The Pokemon Database</h2>
       </footer>
     );
   }

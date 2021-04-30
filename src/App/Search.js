@@ -5,8 +5,9 @@ import React from 'react';
 class Search extends Component {
   state = {
     search: '',
-    nameFilter: '',
-    sortField: ''
+    sortField: '',
+    typeFilter: '',
+    numberFilter: ''
   }
 
   handleSearchChange = ({ target }) => {
@@ -32,6 +33,7 @@ class Search extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.onSearch(this.state);
+    console.log(this.state);
   }
 
   componentDidUpdate(prevProp, prevState) {
@@ -41,7 +43,7 @@ class Search extends Component {
   }
 
   render() {
-    const { search, nameFilter, typeFilter, numberFilter } = this.state;
+    const { search, typeFilter, numberFilter } = this.state;
     const { pokemon } = this.props;
     
  
@@ -55,16 +57,7 @@ class Search extends Component {
           onChange={this.handleSearchChange}
         />
 
-        <select
-          name="nameFilter"
-          value={nameFilter}
-          onChange={this.handleNameChange}
-        >
-          <option value="name">Name</option>
-          <option value="type">Type</option>
-          <option value="number">Dex #</option>
-        </select>
-
+       
         <select
           name="typeFilter"
           value={typeFilter}
@@ -82,7 +75,7 @@ class Search extends Component {
           onChange={this.handleNumberChange}
         >
           <option value="">All</option>
-          {[...new Set(pokemon.map(poke => poke.species_id))].map(number => (
+          {[...new Set(pokemon.map(poke => poke.generation_id))].map(number => (
             <option key={number} value={number}>{number}</option>
           ))}
         </select>

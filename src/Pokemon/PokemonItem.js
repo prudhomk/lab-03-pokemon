@@ -13,6 +13,7 @@ class PokemonItem extends Component {
         <img src={poke.url_image} alt={poke.pokemon}/>
         <p>Type: {poke.type_1}/{poke.type_2}</p>
         <p>Dex #: {poke.species_id}</p>
+        <p>Generation: {poke.generation_id}</p>
 
       </li>
      

@@ -5,13 +5,9 @@
   grid-template-rows: auto auto 1fr auto;
   justify-items: center;
   cursor: pointer;
+  background-color: white;
+  border-radius: 10px;
 }
-
-.PokemonItem :hover {
-  transform: translate(-1px, -1px) scale(1.02);
-  
-}
-
 
 .PokemonItem img {
   height: 100%;

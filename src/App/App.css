@@ -1,12 +1,16 @@
-.App {
+.App, body{
   height: 100vh;
   display: grid;
   grid-template-rows: auto auto 1fr auto;
-
+  background-image: url('./../oak-lab.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 .App main {
-  overflow: auto;
+  
   display: flex;
   align-items: center;
   justify-content: center;
