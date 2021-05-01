@@ -1,9 +1,11 @@
 .Paging {
   text-align: center;
   margin: 10px;
+  color: red;
 }
 .Paging button {
     cursor: pointer;
+    margin: 2px;
   }
 
 
