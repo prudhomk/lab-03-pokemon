@@ -20,6 +20,7 @@ class App extends Component {
     typeFilter: undefined,
     numberFilter: undefined,
     sortField: undefined,
+    weightFilter: undefined,
     page: 1
   }
 
@@ -29,7 +30,7 @@ class App extends Component {
   }
   
   async fetchPokemon() {
-    const { search, sortField, page, typeFilter, numberFilter } = this.state;
+    const { search, sortField, page, typeFilter, numberFilter, weightFilter } = this.state;
     
    
     const response = await request
@@ -39,6 +40,7 @@ class App extends Component {
       .query({ direction: sortField })
       .query({ type: typeFilter })
       .query({ generation_id: numberFilter })
+      .query({ weight: weightFilter })
       .query({ page: page });
 
     this.setState({
@@ -46,15 +48,17 @@ class App extends Component {
     );
   }
 
-    handleSearch = ({ search, sortField, typeFilter, numberFilter }) => {
-      
+    handleSearch = ({ search, sortField, typeFilter, numberFilter, weightFilter }) => {
+      const sortedNumberArray = Object.values(numberFilter).sort(); 
+      console.log(numberFilter);
       this.setState(
         { 
           search: search,
           page: 1, 
           sortField: sortField || undefined,
           typeFilter: typeFilter || undefined,
-          numberFilter: numberFilter || undefined
+          numberFilter: sortedNumberArray || undefined,
+          weightFilter: weightFilter || undefined
         },
         () => this.fetchPokemon()
       );
@@ -76,14 +80,14 @@ class App extends Component {
     }
 
     render() {
-      const { pokemon, numberFilter, page, typeFilter } = this.state;
+      const { pokemon, numberFilter, page, typeFilter, weightFilter } = this.state;
      
       return (
         <div className="App">
 
           <Header/>
           <section className="Options">
-            <Search onSearch={this.handleSearch} pokemon={pokemon} numberFilter={numberFilter} typeFilter={typeFilter}/>
+            <Search onSearch={this.handleSearch} pokemon={pokemon} numberFilter={numberFilter} typeFilter={typeFilter} weightFilter={weightFilter}/>
             <Paging
               page={page}
               onPrev={this.handlePrevPage}

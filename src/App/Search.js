@@ -1,13 +1,29 @@
 import { Component } from 'react';
 import './Search.css';
 import React from 'react';
+import request from 'superagent';
 
 class Search extends Component {
   state = {
     search: '',
     sortField: '',
     typeFilter: '',
-    numberFilter: ''
+    numberFilter: '',
+    weightFilter: '',
+    typesArray: []
+  }
+
+  async fetchTypes() {
+    const response = await request.get('https://pokedex-alchemy.herokuapp.com/api/pokedex/types');
+
+    this.setState({ 
+      typesArray: response.body.map(poke => poke.type)
+    });
+  }
+
+  componentDidMount() {
+    this.fetchTypes();  
+
   }
 
   handleSearchChange = ({ target }) => {
@@ -30,10 +46,14 @@ class Search extends Component {
     this.setState({ typeFilter: target.value });
   }
 
+  handleWeightChange = ({ target }) => {
+    this.setState({ weightFilter: target.value });
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.onSearch(this.state);
-    console.log(this.state);
+    
   }
 
   componentDidUpdate(prevProp, prevState) {
@@ -43,8 +63,8 @@ class Search extends Component {
   }
 
   render() {
-    const { search, sortField, typeFilter, numberFilter } = this.state;
-    const { pokemon } = this.props;
+    const { search, sortField, typeFilter, numberFilter, weightFilter, typesArray } = this.state;
+   
     
  
 
@@ -53,6 +73,7 @@ class Search extends Component {
 
         <input
           name="search"
+          placeholder="Search for a Pokemon"
           value={search}
           onChange={this.handleSearchChange}
         />
@@ -66,27 +87,40 @@ class Search extends Component {
           <option value="des">Descending</option>
         </select>
 
-        <select
+        <select classname="typez"
           name="typeFilter"
           value={typeFilter}
           onChange={this.handleTypeChange}
         >
           <option value="">All</option>
-          {[...new Set(pokemon.map(poke => poke.type_1))].map(type => (
+          {typesArray.map(type => (
             <option key={type} value={type}>{type}</option>
           ))}
         </select>
 
-        <select
+        <input className="gen"
           name="numberFilter"
+          placeholder="Gen"
+          type="number"
+          min="1"
+          max="9"
           value={numberFilter}
           onChange={this.handleNumberChange}
         >
-          <option value="">All</option>
-          {[...new Set(pokemon.map(poke => poke.generation_id))].map(number => (
-            <option key={number} value={number}>{number}</option>
-          ))}
-        </select>
+  
+        </input>
+
+        <input
+          name="weightFilter"
+          placeholder = "Mass"
+          type="number"
+          value={weightFilter}
+          min = '0'
+          max = '9500'
+          onChange={this.handleWeightChange}
+        >
+    
+        </input>
         
         <button>Search the Dex!</button>
         

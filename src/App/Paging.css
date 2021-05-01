@@ -1,8 +1,7 @@
 .Paging {
-  text-align: right;
+  text-align: center;
   margin: 10px;
   color: red;
-  background-color: lightgrey;
 }
 .Paging button {
     cursor: pointer;
